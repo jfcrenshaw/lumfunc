@@ -1,0 +1,93 @@
+z_grid:
+  min: 0.01
+  max: 7
+  step: 0.01
+
+M_grid:
+  min: -28
+  max: -15
+  step: 0.05
+
+# Params motivated by Figs. 3-6 from
+# https://arxiv.org/abs/1804.05850
+dust:
+  seds:
+    min: 10
+    max: 39
+  delta: [-1.0, -0.6, -0.2, 0.0, +0.2]
+  Av: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+
+# Emission lines modeled using color-only network from
+# https://arxiv.org/abs/2404.03055
+emission_lines:
+  seds:
+    min: 16
+    max: 30
+  scale: [0, 0.5, 1.0, 2.0]
+  fwhm: 20
+
+# IGM scales motivated by Fig. 4 from
+# https://arxiv.org/abs/2103.02946
+igm:
+  model: inoue
+  scale: [0.5, 1.0, 1.5, 2.0]
+  min_z: 1.6
+
+filter_files:
+  u: filters/u_megacam.dat
+  uS: filters/uS_megacam.dat
+  g: filters/g_hsc.dat
+  r: filters/r_hsc.dat
+  i: filters/i_hsc.dat
+  z: filters/z_hsc.dat
+  y: filters/y_hsc.dat
+  Y: filters/Y_vircam.dat
+  J: filters/J_vircam.dat
+  H: filters/H_vircam.dat
+  K: filters/K_vircam.dat
+
+# 0 - 30 from LePhare COSMOS set
+# 31 - 39 from
+# https://arxiv.org/abs/2211.10035 and
+# https://ceers.github.io/LarsonSEDTemplates
+sed_files:
+  0: seds/Ell1_A_0.dat
+  1: seds/Ell2_A_0.dat
+  2: seds/Ell3_A_0.dat
+  3: seds/Ell4_A_0.dat
+  4: seds/Ell5_A_0.dat
+  5: seds/Ell6_A_0.dat
+  6: seds/Ell7_A_0.dat
+  7: seds/S0_A_0.dat
+  8: seds/Sa_A_0.dat
+  9: seds/Sa_A_1.dat
+  10: seds/Sb_A_0.dat
+  11: seds/Sb_A_1.dat
+  12: seds/Sc_A_0.dat
+  13: seds/Sc_A_1.dat
+  14: seds/Sc_A_2.dat
+  15: seds/Sd_A_0.dat
+  16: seds/Sd_A_1.dat
+  17: seds/Sd_A_2.dat
+  18: seds/Sdm_A_0.dat
+  19: seds/SB0_A_0.dat
+  20: seds/SB1_A_0.dat
+  21: seds/SB2_A_0.dat
+  22: seds/SB3_A_0.dat
+  23: seds/SB4_A_0.dat
+  24: seds/SB5_A_0.dat
+  25: seds/SB6_A_0.dat
+  26: seds/SB7_A_0.dat
+  27: seds/SB8_A_0.dat
+  28: seds/SB9_A_0.dat
+  29: seds/SB10_A_0.dat
+  30: seds/SB11_A_0.dat
+  31: seds/binc100z001age65.dat
+  32: seds/binc100z001age7.dat
+  33: seds/binc100z001age6.dat
+  34: seds/binc100z001age65_cloudy_LyaReduced.dat
+  35: seds/binc100z001age7_cloudy_LyaReduced.dat
+  36: seds/binc100z001age6_cloudy_LyaReduced.dat
+  37: seds/binc100z001age65_cloudy_LyaReducedNarrowband.dat
+  38: seds/binc100z001age7_cloudy_LyaReducedNarrowband.dat
+  39: seds/binc100z001age6_cloudy_LyaReducedNarrowband.dat

@@ -1,0 +1,7 @@
+SEDs for photo-z modeling.
+
+All files contain 2 columns: wavelength (Angstroms), flambda (erg / A / s / cm^2)
+
+The binc... files are from <https://ceers.github.io/LarsonSEDTemplates>
+
+The rest are from the LePhare COSMOS set

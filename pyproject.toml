@@ -1,0 +1,37 @@
+[project]
+name = "lumfunc"
+version = "0.1.0"
+dependencies = [
+  "astropy",
+  "black",
+  "eazy",
+  "flake8",
+  "flake8-bugbear",
+  "flake8-simplify",
+  "galsim",
+  "isort",
+  "jupyterlab",
+  "lbg_tools",
+  "matplotlib",
+  "mypy",
+  "nomkl",
+  "numpy",
+  "pandas",
+  "pyarrow",
+  "schwimmbad",
+  "scikit-learn",
+  "scipy",
+  "dust_attenuation@git+https://github.com/karllark/dust_attenuation",
+]
+readme = "README.md"
+license = "MIT"
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+ignore_missing_imports = true

@@ -1,0 +1,3 @@
+This directory contains filter transmission curves for the CLAUDS + HSC-SSP surveys
+
+All files contain 2 columns: wavelength (Angstroms), throughput
