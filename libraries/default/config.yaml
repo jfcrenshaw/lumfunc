@@ -15,7 +15,7 @@ dust:
     min: 10
     max: 39
   delta: [-1.0, -0.6, -0.2, 0.0, +0.2]
-  Av: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+  Av: [0.0, 0.05, 0.2, 0.4, 0.6, 1.0]
 
 # Emission lines modeled using color-only network from
 # https://arxiv.org/abs/2404.03055

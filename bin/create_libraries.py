@@ -12,6 +12,9 @@ def main(library, force):
     config = Config(lib_path / "config.yaml")
     config_grid = config.grid
 
+    N_full = len(config_grid)
+    print(f"The config grid has {N_full} rows")
+
     # Load the bandpasses
     bandpasses = Bandpasses(config.filter_files)
 
@@ -38,7 +41,11 @@ def main(library, force):
         return sed.mags
 
     # Loop over templates
+    N_comp = 0 # Track how many rows of the grid are done
     for ID, group in config_grid.groupby("template"):
+        # Add the number of rows in this group to the number completed
+        N_comp += len(group)
+
         # Determine the file name for this template
         file = lib_path / f"template{ID}_library.parquet"
 
@@ -46,6 +53,7 @@ def main(library, force):
         if file.exists() and not force:
             print(
                 f"Skipping template {ID} because a library already exists at '{file}'"
+                f"  [{N_comp / N_full * 100:.1f}% done]"
             )
             continue
 
@@ -60,12 +68,16 @@ def main(library, force):
         )
 
         # Add hyperparameters to dataframe
+        results = results.set_index(group.index)
         results = pd.concat((group, results), axis=1)
 
         # Save the library
         print(f"Saving '{file}' ...", end=" ")
         results.to_parquet(file)
-        print("Done!")
+        print("Done!", end="  ")
+
+        # Print the fraction of the config grid that we have completed
+        print(f"[{N_comp / N_full * 100:.1f}% done]")
 
 
 if __name__ == "__main__":
