@@ -4,24 +4,24 @@ version = "0.1.0"
 dependencies = [
   "astropy",
   "black",
-  "eazy",
+  "dsps",
   "flake8",
   "flake8-bugbear",
   "flake8-simplify",
   "galsim",
   "isort",
+  "jax",
+  "jax_cosmo",
   "jupyterlab",
   "lbg_tools",
   "matplotlib",
   "mypy",
-  "nomkl",
   "numpy",
   "pandas",
   "pyarrow",
   "schwimmbad",
   "scikit-learn",
   "scipy",
-  "dust_attenuation@git+https://github.com/karllark/dust_attenuation",
 ]
 readme = "README.md"
 license = "MIT"

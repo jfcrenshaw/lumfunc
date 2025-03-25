@@ -41,7 +41,7 @@ def main(library, force):
         return sed.mags
 
     # Loop over templates
-    N_comp = 0 # Track how many rows of the grid are done
+    N_comp = 0  # Track how many rows of the grid are done
     for ID, group in config_grid.groupby("template"):
         # Add the number of rows in this group to the number completed
         N_comp += len(group)

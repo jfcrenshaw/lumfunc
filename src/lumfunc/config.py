@@ -26,14 +26,14 @@ class Config:
         }
         self.sed_list = list(self.sed_files.values())
 
-        self.z_grid = self._unpack_grid("z_grid")
-        self.M_grid = self._unpack_grid("M_grid")
+        self.z_grid = self._unpack_range("z_grid")
+        self.M_grid = self._unpack_range("M_grid")
 
-        self.dust_seds = self._unpack_grid("dust", "seds", allows_step=False)
+        self.dust_seds = self._unpack_range("dust", "seds", allows_step=False)
         self.dust_delta = self._ensure_list(config["dust"]["delta"])
         self.dust_Av = self._ensure_list(config["dust"]["Av"])
 
-        self.line_seds = self._unpack_grid("emission_lines", "seds", allows_step=False)
+        self.line_seds = self._unpack_range("emission_lines", "seds", allows_step=False)
         self.line_scale = self._ensure_list(config["emission_lines"]["scale"])
         self.line_fwhm = self._ensure_list(config["emission_lines"]["fwhm"])
 
@@ -45,7 +45,7 @@ class Config:
     def _ensure_list(value) -> list:
         return np.atleast_1d(value).tolist()
 
-    def _unpack_grid(self, *key, allows_step: bool = True) -> list:
+    def _unpack_range(self, *key, allows_step: bool = True) -> list:
         # Get down to the grid config
         param = self.raw
         for k in key:
@@ -68,47 +68,50 @@ class Config:
             msg = msg + ",step" if allows_step else msg
             raise TypeError(msg)
 
+    @staticmethod
+    def _prune_zero_models(grid, columns):
+        idx = []
+        for _, group in grid.groupby("template"):
+            # Find where the first column is zero
+            mask0 = np.isclose(group[columns[0]], 0)
+
+            # Get value of second column closest to zero
+            val = np.abs(group.loc[mask0, columns[1]]).min()
+
+            # Find where second column deviates from this value
+            mask1 = ~np.isclose(group[columns[1]], val)
+
+            # Remove rows where the first column is close to zero, but the second
+            # column deviates from it's min absolute value
+            idx.extend(group[mask0 & mask1].index.to_list())
+
+        return grid.drop(idx)
+
     @property
     def grid(self) -> pd.DataFrame:
         grid = []
         for template in self.sed_files:
-            # Split redshift grid into pre-/post-IGM
-            mask = np.less(self.z_grid, self.igm_min_z)
-            z_pre_igm = compress(self.z_grid, mask)
-            z_post_igm = compress(self.z_grid, ~mask)
-            igm_model = self.igm_model
+            # IGM params
+            igm_model = [0 if model == "inoue" else 1 for model in self.igm_model]
             igm_scale = self.igm_scale
 
             # Decide on dust params
             if template in self.dust_seds:
-                dust_delta = self.dust_delta
                 dust_Av = self.dust_Av
+                dust_delta = self.dust_delta
             else:
-                dust_delta = [0]
-                dust_Av = [0]
+                dust_delta = [0.0]
+                dust_Av = [0.0]
 
             # Decide on emission lines
             if template in self.line_seds:
                 line_scale = self.line_scale
                 line_fwhm = self.line_fwhm
             else:
-                line_scale = [0]
-                line_fwhm = [0]
+                line_scale = [0.0]
+                line_fwhm = [0.0]
 
-            # First the pre-igm grid
-            grid += list(
-                product(
-                    [template],
-                    [igm_model[0]],
-                    [1],
-                    dust_delta,
-                    dust_Av,
-                    line_scale,
-                    line_fwhm,
-                    z_pre_igm,
-                )
-            )
-            # Now the post-igm grid
+            # Add models to the grid
             grid += list(
                 product(
                     [template],
@@ -118,7 +121,7 @@ class Config:
                     dust_Av,
                     line_scale,
                     line_fwhm,
-                    z_post_igm,
+                    self.z_grid,
                 )
             )
 
@@ -135,5 +138,12 @@ class Config:
                 "redshift",
             ],
         )
+
+        # When any of line_scale, dust_Av, igm_scale are zero
+        # we don't need to keep the full outer product of these values
+        # with the other dust/line/igm parameters
+        grid = self._prune_zero_models(grid, ["line_scale", "line_fwhm"])
+        grid = self._prune_zero_models(grid, ["dust_Av", "dust_delta"])
+        grid = self._prune_zero_models(grid, ["igm_scale", "igm_model"])
 
         return grid
